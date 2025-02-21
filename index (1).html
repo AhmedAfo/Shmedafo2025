@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,maximum-scale=1.0,user-scalable=no" />
+  <title>صلاة ليلة القدر</title>
+
+  <!-- Bootstrap CSS -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
+  />
+  <!-- Google Font -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap"
+    rel="stylesheet"
+  />
+  <!-- Font Awesome -->
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+  />
+
+  <style>
+    :root {
+      --gold: #ffd700;
+      --dark-blue: #0a1931;
+      --islamic-green: #009688;
+      --glow-color: #ffeb3b;
+      --light-bg: #f5f5f5;
+      --light-text: #111;
+      --dark-text: #fff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Tajawal", sans-serif;
+      color: var(--dark-text);
+      min-height: 100vh;
+      transition: background 0.5s ease, color 0.5s ease;
+      background: linear-gradient(45deg, #141e30, #243b55);
+      position: relative;
+    }
+
+    /* الوضع النهاري */
+    body.light-mode {
+      background: var(--light-bg) !important;
+      color: var(--light-text) !important;
+    }
+
+    /* زر تبديل الوضع الليلي/النهاري */
+    .mode-toggle {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+
+    /* شاشات اليوم المختلفة */
+    .day-1 {
+      background: linear-gradient(45deg, #141e30, #243b55) !important;
+    }
+    .day-2 {
+      background: linear-gradient(45deg, #4caf50, #8bc34a) !important;
+    }
+    .day-3 {
+      background: linear-gradient(45deg, #673ab7, #9c27b0) !important;
+    }
+    .day-4 {
+      background: linear-gradient(45deg, #f44336, #e91e63) !important;
+    }
+    .day-5 {
+      background: linear-gradient(45deg, #2196f3, #3f51b5) !important;
+    }
+    .day-6 {
+      background: linear-gradient(45deg, #ff9800, #ff5722) !important;
+    }
+
+    /* نجوم رمضان */
+    .ramadan-stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 0;
+    }
+    .ramadan-stars span {
+      position: absolute;
+      color: #fff;
+      opacity: 0.8;
+      font-size: 1.2rem;
+      animation: floatStar 8s linear infinite;
+    }
+    @keyframes floatStar {
+      0% {
+        transform: translateY(100vh) scale(0);
+        opacity: 0;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5);
+        opacity: 0;
+      }
+    }
+
+    /* شاشة تمهيد (Splash Screen) */
+    #splash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #141e30;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 9999;
+      font-size: 1.5rem;
+      transition: opacity 0.5s ease;
+    }
+    #splash img {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 1rem;
+      animation: rotateLogo 2s linear infinite;
+    }
+    @keyframes rotateLogo {
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .page-container {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      width: 100%;
+      padding: 1rem;
+      position: relative;
+      transition: opacity 0.4s ease;
+      opacity: 1;
+    }
+
+    .welcome-card {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      padding: 1.5rem;
+      margin: 1rem 0;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 600px;
+      transition: opacity 0.3s ease;
+    }
+
+    .designer {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: white;
+      position: relative;
+      display: inline-block;
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    @keyframes glow {
+      0% {
+        text-shadow: 0 0 5px var(--glow-color), 0 0 10px var(--glow-color),
+          0 0 15px var(--glow-color);
+      }
+      100% {
+        text-shadow: 0 0 10px var(--glow-color), 0 0 20px var(--glow-color),
+          0 0 30px var(--glow-color);
+      }
+    }
+
+    .prayer-card {
+      background: rgba(255, 255, 255, 0.97);
+      border-radius: 15px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      overflow: hidden;
+      margin: 1rem 0;
+    }
+
+    .list-group-item {
+      border: none;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 1.2rem 1.5rem;
+      font-size: 1rem;
+      color: #333;
+      transition: all 0.2s ease;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+    .list-group-item:active {
+      background: #f8f9fa;
+    }
+
+    .btn-prayer {
+      background: linear-gradient(45deg, var(--islamic-green), #00796b);
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.1rem;
+      border-radius: 15px;
+      width: 100%;
+      transition: transform 0.2s ease;
+      color: white;
+    }
+    .btn-prayer:active {
+      transform: scale(0.98);
+    }
+
+    .day-counter {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      margin: 1rem 0;
+    }
+
+    .locked {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .locked::after {
+      content: '🔒';
+      margin-right: 10px;
+      filter: grayscale(0.8);
+    }
+
+    .completed {
+      position: relative;
+      opacity: 0.7;
+    }
+    .completed::after {
+      content: '✓ تم الانتهاء';
+      color: #28a745;
+      font-size: 0.9rem;
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .welcome-card.done {
+      text-align: center;
+    }
+    .done-title {
+      font-size: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .emoji {
+      position: absolute;
+      font-size: 2rem;
+      pointer-events: none;
+      animation: floatUp 1s ease forwards;
+      z-index: 2;
+    }
+    @keyframes floatUp {
+      0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-50px) scale(2);
+        opacity: 0;
+      }
+    }
+
+    /* شريط التقدم (Progress Bar) */
+    .progress-bar {
+      margin: 1rem 0;
+      height: 15px;
+      background-color: #e0e0e0;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      background-color: #4caf50;
+      height: 100%;
+      width: 0%;
+      transition: width 0.5s ease;
+    }
+
+    /* زر المشاركة */
+    .share-btn {
+      margin-top: 1rem;
+      background: #3b5998;
+      color: #fff;
+      font-size: 1rem;
+    }
+
+    /* إخفاء مشغل الصوت */
+    audio {
+      display: none;
+    }
+  </style>
+</head>
+<body class="day-1">
+  <!-- شاشة تمهيد (Splash Screen) -->
+  <div id="splash">
+    <img src="https://cdn-icons-png.flaticon.com/512/859/859310.png" alt="splash-logo" />
+    <p>جارٍ التحميل...</p>
+  </div>
+
+  <!-- زر الوضع الليلي/النهاري -->
+  <div class="mode-toggle" id="modeToggle" title="تبديل الوضع">
+    <i class="fa-solid fa-sun"></i>
+  </div>
+
+  <!-- نجوم رمضان العائمة -->
+  <div class="ramadan-stars" id="ramadanStars"></div>
+
+  <div class="page-container">
+    <!-- شاشة البداية -->
+    <div id="welcome" class="welcome-card">
+      <h1 style="font-size: 1.8rem; color: var(--gold); margin-bottom: 1.5rem;">
+        <i class="fa-solid fa-moon"></i> صلاة ليلة القدر <i class="fa-solid fa-star"></i>
+      </h1>
+      <p style="font-size: 1.1rem; line-height: 1.6;">
+        أداء 100 ركعة بطريقة منظمة وميسرة
+      </p>
+      <button onclick="startApp(event)" class="btn btn-prayer mt-3">
+        <i class="fa-solid fa-play"></i> ابدأ الصلاة الآن
+      </button>
+      <div class="designer">تصميم: أحمد فلاح</div>
+    </div>
+
+    <!-- شاشة الصلاة -->
+    <div id="prayer-container" class="welcome-card" style="display: none;">
+      <div
+        class="d-flex justify-content-between align-items-center mb-3"
+        style="gap:0.5rem;"
+      >
+        <h2 id="day-title" style="font-size: 1.4rem; font-weight: 700; margin: 0;">
+          اليوم الأول
+        </h2>
+        <div class="day-counter">
+          المتبقي: <span id="counter">100</span>
+        </div>
+      </div>
+      <!-- شريط التقدّم -->
+      <div class="progress-bar" id="progressBar">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+
+      <div class="prayer-card">
+        <ul id="prayer-list" class="list-group list-group-flush"></ul>
+      </div>
+    </div>
+
+    <!-- شاشة الإكمال -->
+    <div id="congratulations" class="welcome-card done" style="display: none;">
+      <div class="done-title">🎉 مبارك لك!</div>
+      <p style="font-size: 1.1rem; line-height: 1.6;">
+        تم إكمال 100 ركعة بنجاح<br />
+        نسأل الله القبول والغفران
+      </p>
+      <button onclick="location.reload()" class="btn btn-prayer mt-3">
+        إعادة البدء
+      </button>
+      <button onclick="shareApp()" class="btn btn-prayer share-btn">
+        <i class="fa-solid fa-share"></i> مشاركة
+      </button>
+    </div>
+  </div>
+
+  <!-- أصوات قصيرة -->
+  <audio id="startAudio" src="https://actions.google.com/sounds/v1/cartoon/wood_plank_flicks.ogg"></audio>
+  <audio id="doneAudio" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+
+  <script>
+    let totalPrayers = 100;
+    let currentDay = 1;
+    let prayers = [];
+    const dayNames = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس"];
+    const dayClasses = ["day-1", "day-2", "day-3", "day-4", "day-5", "day-6"];
+
+    // العناصر الصوتية
+    const startAudio = document.getElementById("startAudio");
+    const doneAudio = document.getElementById("doneAudio");
+
+    // النجوم الرمضانية
+    const ramadanEmoji = ["⭐", "🌙", "✨", "💫", "🌟"];
+    // إيموجيز النقر
+    const emojis = ["✨", "💫", "🌟", "🌙", "⭐", "💕"];
+
+    // Splash Screen
+    const splash = document.getElementById("splash");
+    // إخفاء شاشة التمهيد بعد ثانيتين
+    setTimeout(() => {
+      splash.style.opacity = "0";
+      setTimeout(() => {
+        splash.style.display = "none";
+      }, 500);
+    }, 2000);
+
+    generateStars(15);
+
+    // زر التبديل بين الوضع الليلي/النهاري
+    const modeToggle = document.getElementById("modeToggle");
+    modeToggle.addEventListener("click", toggleMode);
+
+    function toggleMode() {
+      document.body.classList.toggle("light-mode");
+      if (document.body.classList.contains("light-mode")) {
+        modeToggle.innerHTML = '<i class="fa-solid fa-moon"></i>';
+      } else {
+        modeToggle.innerHTML = '<i class="fa-solid fa-sun"></i>';
+      }
+    }
+
+    function startApp(e) {
+      document.getElementById("welcome").style.display = "none";
+      // تشغيل صوت بدء
+      startAudio.play();
+
+      const prayerContainer = document.getElementById("prayer-container");
+      prayerContainer.style.display = "block";
+      loadDay();
+      spawnEmoji(e);
+    }
+
+    function loadDay() {
+      if (currentDay > 6) {
+        document.getElementById("prayer-container").style.display = "none";
+        document.getElementById("congratulations").style.display = "block";
+        // تشغيل صوت انتهاء
+        doneAudio.play();
+        return;
+      }
+
+      // إزالة جميع الخلفيات
+      dayClasses.forEach((cls) => document.body.classList.remove(cls));
+      // إضافة خلفية اليوم
+      document.body.classList.add(dayClasses[currentDay - 1]);
+
+      document.getElementById("day-title").textContent = `اليوم ${
+        dayNames[currentDay - 1]
+      }`;
+
+      prayers =
+        currentDay === 6
+          ? [
+              ["صلاة الظهر", 4],
+              ["صلاة العصر", 4],
+              ["صلاة المغرب", 3],
+              ["صلاة العشاء", 4]
+            ]
+          : [
+              ["صلاة الصبح", 2],
+              ["صلاة الظهر", 4],
+              ["صلاة العصر", 4],
+              ["صلاة المغرب", 3],
+              ["صلاة العشاء", 4]
+            ];
+
+      updateList();
+      updateCounter();
+      updateProgressBar();
+    }
+
+    function pray(index, event) {
+      if (index === 0 && prayers[index]) {
+        totalPrayers -= prayers[index][1];
+        const listItem = document.getElementById(`prayer-${index}`);
+        listItem.classList.add("completed");
+        spawnEmoji(event);
+
+        setTimeout(() => {
+          prayers.splice(index, 1);
+          updateList();
+          updateCounter();
+          updateProgressBar();
+
+          if (prayers.length === 0) {
+            currentDay++;
+            loadDay();
+          }
+        }, 1000);
+      }
+    }
+
+    function updateList() {
+      const list = document.getElementById("prayer-list");
+      list.innerHTML = "";
+      prayers.forEach((p, i) => {
+        const listItem = document.createElement("li");
+        listItem.className = `list-group-item ${i > 0 ? "locked" : ""}`;
+        listItem.id = `prayer-${i}`;
+        listItem.innerHTML = `
+          <div>
+            <span style="font-weight: 600;">${p[0]}</span>
+            <span style="font-size: 0.9rem; color: #666;">${p[1]} ركعات</span>
+          </div>
+          ${
+            i === 0
+              ? '<div style="color: var(--islamic-green);"><i class="fa-solid fa-hand-point-right"></i></div>'
+              : ""
+          }
+        `;
+        if (i === 0) {
+          listItem.onclick = (e) => pray(i, e);
+        }
+        list.appendChild(listItem);
+      });
+    }
+
+    function updateCounter() {
+      document.getElementById("counter").textContent = totalPrayers;
+    }
+
+    // شريط التقدم بناءً على عدد الركعات المنتهية
+    function updateProgressBar() {
+      const fill = document.getElementById("progressFill");
+      const done = 100 - totalPrayers;
+      const percent = (done / 100) * 100; // done%
+      fill.style.width = percent + "%";
+    }
+
+    function spawnEmoji(e) {
+      const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+      const span = document.createElement("span");
+      span.textContent = emoji;
+      span.className = "emoji";
+      document.body.appendChild(span);
+      span.style.left = e.pageX + "px";
+      span.style.top = e.pageY + "px";
+      setTimeout(() => {
+        span.remove();
+      }, 1000);
+    }
+
+    function generateStars(count) {
+      const container = document.getElementById("ramadanStars");
+      for (let i = 0; i < count; i++) {
+        const star = document.createElement("span");
+        star.textContent = ramadanEmoji[Math.floor(Math.random() * ramadanEmoji.length)];
+        const randomLeft = Math.floor(Math.random() * 100);
+        const randomDelay = Math.floor(Math.random() * 5);
+        const randomSize = Math.random() * 1.5 + 1;
+
+        star.style.left = randomLeft + "%";
+        star.style.fontSize = randomSize + "rem";
+        star.style.animationDelay = randomDelay + "s";
+
+        container.appendChild(star);
+      }
+    }
+
+    // زر المشاركة
+    function shareApp() {
+      if (navigator.share) {
+        navigator.share({
+          title: "صلاة ليلة القدر",
+          text: "لنشارك معًا هذه الصفحة المميزة!",
+          url: window.location.href,
+        }).catch((err) => console.log("لم تتم المشاركة:", err));
+      } else {
+        alert("المتصفح لا يدعم خاصية المشاركة");
+      }
+    }
+  </script>
+</body>
+</html>
